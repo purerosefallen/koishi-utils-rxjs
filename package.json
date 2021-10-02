@@ -1,8 +1,9 @@
 {
   "name": "koishi-utils-rxjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Koishi.js in RxJS",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint --fix ."
