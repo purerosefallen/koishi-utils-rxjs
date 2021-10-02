@@ -1,2 +1,7 @@
 # koishi-utils-rxjs
-Koishi.js in RxJS
+
+使用 RxJS 编写 Koishi.js 的插件。
+
+## API
+
+TODO
