@@ -1,0 +1,16 @@
+/install-npm.sh
+.git*
+/output
+/dest
+/config.yaml
+.idea
+.dockerignore
+Dockerfile
+/src
+.eslintrc.js
+.prettierrc
+webpack.config.js
+tsconfig.json
+/test
+/dist/test
+/workspace

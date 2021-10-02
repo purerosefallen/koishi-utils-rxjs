@@ -1,0 +1,49 @@
+{
+  "name": "koishi-utils-rxjs",
+  "version": "0.0.1",
+  "description": "Koishi.js in RxJS",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purerosefallen/koishi-utils-rxjs.git"
+  },
+  "keywords": [
+    "bot",
+    "qqbot",
+    "cqhttp",
+    "coolq",
+    "chatbot",
+    "koishi",
+    "plugin",
+    "utilities"
+  ],
+  "author": "Nanahira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/purerosefallen/koishi-utils-rxjs/issues"
+  },
+  "homepage": "https://github.com/purerosefallen/koishi-utils-rxjs#readme",
+  "peerDependencies": {
+    "koishi": "^4.0.0-alpha.8"
+  },
+  "devDependencies": {
+    "@koishijs/plugin-onebot": "^4.0.0-alpha.7",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.10.2",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "koishi": "^4.0.0-alpha.8",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "rxjs": "^7.3.1"
+  }
+}

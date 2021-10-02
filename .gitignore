@@ -102,3 +102,12 @@ dist
 
 # TernJS port file
 .tern-port
+
+/build
+/dist
+/output
+/config.yaml
+.idea
+/workspace
+/test
+/install-npm.sh
