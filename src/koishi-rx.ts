@@ -1,5 +1,5 @@
 import { Channel, Command, Context, Session, User } from 'koishi';
-import { isObservable, Observable } from 'rxjs';
+import { isObservable, map, mergeMap, Observable } from 'rxjs';
 import { InnerKeys, SessionRx } from './session';
 import { ContextRx } from './context';
 
@@ -43,21 +43,23 @@ export interface SessionAndMessage<
 }
 
 export function warpMessage(obs: Observable<SessionAndMessage>) {
-  return obs.subscribe({
-    next: (sendObj) =>
+  return obs.pipe(
+    mergeMap((sendObj) =>
       getSessionFromSessionOrRx(sendObj.session).send(sendObj.message),
-  });
+    ),
+  );
 }
 
 export function warpMessageQueue(
   obs: Observable<SessionAndMessage>,
   defaultDelay?: number,
 ) {
-  return obs.subscribe({
-    next: (sendObj) =>
+  return obs.pipe(
+    mergeMap((sendObj) =>
       getSessionFromSessionOrRx(sendObj.session).sendQueued(
         sendObj.message,
         sendObj.delay || defaultDelay,
       ),
-  });
+    ),
+  );
 }

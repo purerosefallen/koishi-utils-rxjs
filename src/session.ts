@@ -1,11 +1,21 @@
 import { Channel, Session, User } from 'koishi';
 import { mergeMap, Observable } from 'rxjs';
 
-export type ReplaceSession<T> = T extends Session ? SessionRx : T;
+export type ReplaceSession<T> = T extends Session<
+  infer U,
+  infer G,
+  infer X,
+  infer Y
+>
+  ? SessionRx<U, G, X, Y>
+  : T;
 
-export type ReplaceSessionTuple<T extends [...any[]]> = {
-  [Index in keyof T]: ReplaceSession<T[Index]>;
-} & { length: T['length']; map: T['map'] };
+export type ReplaceSessionTuple<A extends any[]> = A extends [
+  infer L,
+  ...infer R
+]
+  ? [ReplaceSession<L>, ...ReplaceSessionTuple<R>]
+  : [];
 
 export type UnionToIntersection<U> = (
   U extends any ? (key: U) => void : never

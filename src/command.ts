@@ -8,7 +8,13 @@ import {
   User,
 } from 'koishi';
 import { SessionRx } from './session';
-import { isObservable, Observable } from 'rxjs';
+import {
+  filter,
+  isObservable,
+  lastValueFrom,
+  mergeMap,
+  Observable,
+} from 'rxjs';
 import { Awaitable } from './koishi-rx';
 
 export interface ArgvRx<
@@ -16,21 +22,8 @@ export interface ArgvRx<
   G extends Channel.Field = never,
   A extends any[] = any[],
   O = {}
-> {
-  args?: A;
-  options?: O;
-  error?: string;
-  source?: string;
-  initiator?: string;
-  terminator?: string;
-  session?: SessionRx<U, G>;
-  command?: Command<U, G, A, O>;
-  rest?: string;
-  pos?: number;
-  root?: boolean;
-  tokens?: Token[];
-  name?: string;
-  next?: NextFunction;
+> extends Argv<U, G, A, O> {
+  sessionRx?: SessionRx<U, G>;
 }
 
 export function argvToRx<
@@ -41,7 +34,7 @@ export function argvToRx<
 >(argv: Argv<U, G, A, O>): ArgvRx<U, G, A, O> {
   return {
     ...argv,
-    session: new SessionRx<U, G>(argv.session),
+    sessionRx: new SessionRx<U, G>(argv.session),
   };
 }
 
@@ -73,19 +66,21 @@ export function warpAction<
   ) => Awaitable<void | string> | Observable<void | string>,
   append?: boolean,
 ): Command<U, G, A, O> {
-  const actionFun = (...args: Parameters<Command.Action<U, G, A, O>>) => {
+  const actionFun = async (...args: Parameters<Command.Action<U, G, A, O>>) => {
     const result = fun(...args);
     if (!isObservable(result)) {
       return result;
     }
     const [{ session }] = args;
-    result.subscribe({
-      next: (val) => {
-        if (val) {
-          session.send(val);
-        }
-      },
-    });
+    const sendObs = result.pipe(
+      filter((val) => !!val),
+      mergeMap((val: string) => session.send(val)),
+    );
+    try {
+      // try to ignore no value error
+      await lastValueFrom(sendObs);
+    } catch (e) {}
+    return;
   };
   return command.action(actionFun, append);
 }
