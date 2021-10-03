@@ -1,6 +1,6 @@
 import { Context, EventMap, Session } from 'koishi';
 import { Observable } from 'rxjs';
-import { SessionRx } from './session';
+import { ReplaceSessionTuple, SessionRx } from './session';
 
 export class ContextRx {
   constructor(public ctx: Context) {}
@@ -8,7 +8,7 @@ export class ContextRx {
   wrap<K extends keyof EventMap>(
     name: K,
     prepend?: boolean,
-  ): Observable<Parameters<EventMap[K]>> {
+  ): Observable<ReplaceSessionTuple<Parameters<EventMap[K]>>> {
     return new Observable<any>((subscriber) => {
       const dispose = this.ctx.on(
         name,
@@ -17,7 +17,11 @@ export class ContextRx {
             dispose();
             return;
           }
-          subscriber.next(args);
+          subscriber.next(
+            args.map((arg) =>
+              arg instanceof Session ? new SessionRx(arg) : arg,
+            ),
+          );
         },
         prepend,
       );

@@ -63,21 +63,44 @@ export function warpContext(context: Context) {
   return new ContextRx(context);
 }
 
-export function warpMessage(
-  obs: Observable<{ session: Session; message: string }>,
-) {
+function getSessionFromSessionOrRx<
+  U extends User.Field = never,
+  G extends Channel.Field = never,
+  X extends keyof Session.Events = keyof Session.Events,
+  Y extends InnerKeys<Session.Events, X> = InnerKeys<Session.Events, X>
+>(s: Session<U, G, X, Y> | SessionRx<U, G, X, Y>) {
+  if (s instanceof SessionRx) {
+    return s.session;
+  } else {
+    return s;
+  }
+}
+
+export interface SessionAndMessage<
+  U extends User.Field = never,
+  G extends Channel.Field = never,
+  X extends keyof Session.Events = keyof Session.Events,
+  Y extends InnerKeys<Session.Events, X> = InnerKeys<Session.Events, X>
+> {
+  session: Session<U, G, X, Y> | SessionRx<U, G, X, Y>;
+  message: string;
+  delay?: number;
+}
+
+export function warpMessage(obs: Observable<SessionAndMessage>) {
   return obs.subscribe({
-    next: (sendObj) => sendObj.session.send(sendObj.message),
+    next: (sendObj) =>
+      getSessionFromSessionOrRx(sendObj.session).send(sendObj.message),
   });
 }
 
 export function warpMessageQueue(
-  obs: Observable<{ session: Session; message: string; delay: number }>,
+  obs: Observable<SessionAndMessage>,
   defaultDelay?: number,
 ) {
   return obs.subscribe({
     next: (sendObj) =>
-      sendObj.session.sendQueued(
+      getSessionFromSessionOrRx(sendObj.session).sendQueued(
         sendObj.message,
         sendObj.delay || defaultDelay,
       ),
