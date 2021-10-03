@@ -1,6 +1,6 @@
 {
   "name": "koishi-utils-rxjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Koishi.js in RxJS",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
