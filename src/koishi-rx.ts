@@ -42,24 +42,40 @@ export interface SessionAndMessage<
   delay?: number;
 }
 
-export function warpMessage(obs: Observable<SessionAndMessage>) {
+export function warpMessage<
+  U extends User.Field = never,
+  G extends Channel.Field = never,
+  X extends keyof Session.Events = keyof Session.Events,
+  Y extends InnerKeys<Session.Events, X> = InnerKeys<Session.Events, X>
+>(
+  obs: Observable<SessionAndMessage<U, G, X, Y>>,
+): Observable<SessionAndMessage<U, G, X, Y>> {
   return obs.pipe(
-    mergeMap((sendObj) =>
-      getSessionFromSessionOrRx(sendObj.session).send(sendObj.message),
-    ),
+    mergeMap(async (sendObj) => {
+      await getSessionFromSessionOrRx<U, G, X, Y>(sendObj.session).send(
+        sendObj.message,
+      );
+      return sendObj;
+    }),
   );
 }
 
-export function warpMessageQueue(
-  obs: Observable<SessionAndMessage>,
+export function warpMessageQueue<
+  U extends User.Field = never,
+  G extends Channel.Field = never,
+  X extends keyof Session.Events = keyof Session.Events,
+  Y extends InnerKeys<Session.Events, X> = InnerKeys<Session.Events, X>
+>(
+  obs: Observable<SessionAndMessage<U, G, X, Y>>,
   defaultDelay?: number,
-) {
+): Observable<SessionAndMessage<U, G, X, Y>> {
   return obs.pipe(
-    mergeMap((sendObj) =>
-      getSessionFromSessionOrRx(sendObj.session).sendQueued(
+    mergeMap(async (sendObj) => {
+      await getSessionFromSessionOrRx<U, G, X, Y>(sendObj.session).sendQueued(
         sendObj.message,
         sendObj.delay || defaultDelay,
-      ),
-    ),
+      );
+      return sendObj;
+    }),
   );
 }

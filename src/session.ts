@@ -34,10 +34,20 @@ export class SessionRx<
 > {
   constructor(public session: Session<U, G, X, Y>) {}
   send(obs: Observable<string>) {
-    return obs.pipe(mergeMap((message) => this.session.send(message)));
+    return obs.pipe(
+      mergeMap(async (message) => {
+        await this.session.send(message);
+        return message;
+      }),
+    );
   }
 
   sendQueued(obs: Observable<string>) {
-    return obs.pipe(mergeMap((message) => this.session.sendQueued(message)));
+    return obs.pipe(
+      mergeMap(async (message) => {
+        await this.session.sendQueued(message);
+        return message;
+      }),
+    );
   }
 }
