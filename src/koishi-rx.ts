@@ -1,5 +1,5 @@
-import { Channel, Command, Context, Session, User } from 'koishi';
-import { isObservable, map, mergeMap, Observable } from 'rxjs';
+import { Channel, Context, Session, User } from 'koishi';
+import { mergeMap, Observable } from 'rxjs';
 import { InnerKeys, SessionRx } from './session';
 import { ContextRx } from './context';
 

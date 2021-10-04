@@ -1,12 +1,4 @@
-import {
-  Argv,
-  Channel,
-  Command,
-  NextFunction,
-  Session,
-  Token,
-  User,
-} from 'koishi';
+import { Argv, Channel, Command, User } from 'koishi';
 import { SessionRx } from './session';
 import {
   filter,
