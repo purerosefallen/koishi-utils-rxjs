@@ -109,5 +109,5 @@ dist
 /config.yaml
 .idea
 /workspace
-/test
+/test/test-koishi.ts
 /install-npm.sh
